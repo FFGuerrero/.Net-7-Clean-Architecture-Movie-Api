@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Infrastructure.Persistence;
-using MovieApi.WebUI.Filters;
-using MovieApi.WebUI.Services;
+using MovieApi.WebApi.Filters;
+using MovieApi.WebApi.Services;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 

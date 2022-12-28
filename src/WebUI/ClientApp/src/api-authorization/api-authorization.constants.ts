@@ -1,4 +1,4 @@
-export const ApplicationName = 'MovieApi.WebUI';
+export const ApplicationName = 'MovieApi.WebApi';
 
 export const ReturnUrlType = 'returnUrl';
 

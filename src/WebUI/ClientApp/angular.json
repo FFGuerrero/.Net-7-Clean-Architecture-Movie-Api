@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MovieApi.WebUI": {
+    "MovieApi.WebApi": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "MovieApi.WebUI:build:production"
+              "browserTarget": "MovieApi.WebApi:build:production"
             },
             "development": {
-              "browserTarget": "MovieApi.WebUI:build:development",
+              "browserTarget": "MovieApi.WebApi:build:development",
               "proxyConfig": "proxy.conf.js"
             }
           },
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "MovieApi.WebUI:build"
+            "browserTarget": "MovieApi.WebApi:build"
           }
         },
         "test": {
@@ -131,7 +131,7 @@
       }
     }
   },
-  "defaultProject": "MovieApi.WebUI",
+  "defaultProject": "MovieApi.WebApi",
   "cli": {
     "analytics": false
   }

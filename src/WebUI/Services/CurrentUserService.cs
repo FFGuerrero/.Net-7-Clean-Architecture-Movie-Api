@@ -2,7 +2,7 @@
 
 using MovieApi.Application.Common.Interfaces;
 
-namespace MovieApi.WebUI.Services;
+namespace MovieApi.WebApi.Services;
 public class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

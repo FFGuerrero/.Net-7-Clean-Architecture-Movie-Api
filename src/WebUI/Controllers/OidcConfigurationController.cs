@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MovieApi.WebUI.Controllers;
+namespace MovieApi.WebApi.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class OidcConfigurationController : Controller
 {

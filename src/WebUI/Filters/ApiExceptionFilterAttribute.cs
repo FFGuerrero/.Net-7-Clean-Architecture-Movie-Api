@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using MovieApi.Application.Common.Exceptions;
 
-namespace MovieApi.WebUI.Filters;
+namespace MovieApi.WebApi.Filters;
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {
     private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 
-namespace MovieApi.WebUI.Controllers;
+namespace MovieApi.WebApi.Controllers;
 public class WeatherForecastController : ApiControllerBase
 {
     [HttpGet]

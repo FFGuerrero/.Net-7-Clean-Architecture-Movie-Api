@@ -4,7 +4,7 @@ using MovieApi.Domain.Entities;
 using MovieApi.Domain.ValueObjects;
 using NUnit.Framework;
 
-using static Testing;
+using static MovieApi.Application.IntegrationTests.Testing;
 
 namespace MovieApi.Application.IntegrationTests.TodoLists.Queries;
 public class GetTodosTests : BaseTestFixture

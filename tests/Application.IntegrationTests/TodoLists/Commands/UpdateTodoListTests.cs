@@ -5,7 +5,7 @@ using MovieApi.Application.TodoLists.Commands.UpdateTodoList;
 using MovieApi.Domain.Entities;
 using NUnit.Framework;
 
-using static Testing;
+using static MovieApi.Application.IntegrationTests.Testing;
 
 namespace MovieApi.Application.IntegrationTests.TodoLists.Commands;
 public class UpdateTodoListTests : BaseTestFixture

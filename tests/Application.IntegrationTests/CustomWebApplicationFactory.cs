@@ -7,7 +7,7 @@ using Moq;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Infrastructure.Persistence;
 
-using static Testing;
+using static MovieApi.Application.IntegrationTests.Testing;
 
 namespace MovieApi.Application.IntegrationTests;
 internal class CustomWebApplicationFactory : WebApplicationFactory<Program>

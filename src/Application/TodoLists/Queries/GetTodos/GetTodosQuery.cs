@@ -7,7 +7,6 @@ using MovieApi.Application.Common.Security;
 using MovieApi.Domain.Enums;
 
 namespace MovieApi.Application.TodoLists.Queries.GetTodos;
-[Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;
 
 public class GetTodosQueryHandler : IRequestHandler<GetTodosQuery, TodosVm>

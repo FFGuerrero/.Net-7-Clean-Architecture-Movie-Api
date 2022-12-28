@@ -8,7 +8,6 @@ using MovieApi.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using MovieApi.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 namespace MovieApi.WebApi.Controllers;
-[Authorize]
 public class TodoItemsController : ApiControllerBase
 {
     [HttpGet]

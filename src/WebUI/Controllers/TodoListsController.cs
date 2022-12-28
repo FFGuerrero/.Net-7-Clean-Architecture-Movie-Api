@@ -7,7 +7,6 @@ using MovieApi.Application.TodoLists.Queries.ExportTodos;
 using MovieApi.Application.TodoLists.Queries.GetTodos;
 
 namespace MovieApi.WebApi.Controllers;
-[Authorize]
 public class TodoListsController : ApiControllerBase
 {
     [HttpGet]

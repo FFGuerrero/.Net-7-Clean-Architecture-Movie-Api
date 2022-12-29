@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.WebApi.Controllers;
-using NSwag.Annotations;
 
 namespace WebApi.Controllers;
 
+/// <summary>
+/// Movies API
+/// </summary>
 [AllowAnonymous]
 [Produces("application/json")]
-[OpenApiTag("Movies", Description = "Movie API")]
 public class MoviesController : ApiControllerBase
 {
     /// <summary>
@@ -20,6 +21,6 @@ public class MoviesController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedList<MovieDto>>> GetMoviesWithPagination([FromQuery] GetMoviesWithPaginationQuery query)
     {
-        return Ok(await Mediator.Send(query));
+        return await Mediator.Send(query);
     }
 }

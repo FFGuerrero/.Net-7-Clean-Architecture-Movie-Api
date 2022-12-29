@@ -1,11 +1,11 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Reflection;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Infrastructure.Persistence;
 using MovieApi.WebApi.Filters;
 using MovieApi.WebApi.Services;
-using NSwag;
-using NSwag.Generation.Processors.Security;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class ConfigureServices
@@ -31,21 +31,54 @@ public static class ConfigureServices
         services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
 
-        services.AddOpenApiDocument(configure =>
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
         {
-            configure.Title = "MovieApi API";
-            configure.Version = "v1";
-            configure.UseXmlDocumentation = true;
-            configure.Description = "Movies API";
-            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Type = OpenApiSecuritySchemeType.ApiKey,
-                Name = "Authorization",
-                In = OpenApiSecurityApiKeyLocation.Header,
-                Description = "Type into the textbox: Bearer {your JWT token}."
+                Version = "v1",
+                Title = "MovieApi API",
+                Description = "An ASP.NET Core Web API for managing Movies",
+                TermsOfService = new Uri("https://example.com/terms"),
+                Contact = new OpenApiContact
+                {
+                    Name = "Example Contact",
+                    Url = new Uri("https://example.com/contact")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "Example License",
+                    Url = new Uri("https://example.com/license")
+                }
             });
 
-            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            options.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Type into the textbox: Bearer {your JWT token}.",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
         return services;

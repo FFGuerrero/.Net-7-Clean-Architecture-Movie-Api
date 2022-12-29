@@ -86,5 +86,20 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        if (!_context.Movies.Any())
+        {
+            _context.Movies.Add(new Movie
+            {
+                Title = "Test movie",
+                Description = "Test movie description",
+                Stock = 5,
+                RentalPrice = 115,
+                SalePrice = 1350,
+                Availability = true
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

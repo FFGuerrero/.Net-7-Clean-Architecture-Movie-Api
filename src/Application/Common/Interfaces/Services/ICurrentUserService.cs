@@ -1,4 +1,4 @@
-﻿namespace MovieApi.Application.Common.Interfaces;
+﻿namespace MovieApi.Application.Common.Interfaces.Services;
 
 public interface ICurrentUserService
 {

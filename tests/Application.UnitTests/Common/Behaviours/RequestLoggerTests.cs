@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using MovieApi.Application.Common.Behaviours;
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.TodoItems.Commands.CreateTodoItem;
 using NUnit.Framework;
 

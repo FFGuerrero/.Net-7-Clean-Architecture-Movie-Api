@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Infrastructure.Persistence;
 
 using static MovieApi.Application.IntegrationTests.Testing;

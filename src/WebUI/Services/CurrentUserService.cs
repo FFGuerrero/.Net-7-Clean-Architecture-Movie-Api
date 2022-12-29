@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
-
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 
 namespace MovieApi.WebApi.Services;
 public class CurrentUserService : ICurrentUserService

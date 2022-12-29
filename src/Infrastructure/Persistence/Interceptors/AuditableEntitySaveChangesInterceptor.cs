@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Domain.Common;
 
 namespace MovieApi.Infrastructure.Persistence.Interceptors;

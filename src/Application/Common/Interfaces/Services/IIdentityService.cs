@@ -1,6 +1,6 @@
 ﻿using MovieApi.Application.Common.Models;
 
-namespace MovieApi.Application.Common.Interfaces;
+namespace MovieApi.Application.Common.Interfaces.Services;
 public interface IIdentityService
 {
     Task<string> GetUserNameAsync(string userId);

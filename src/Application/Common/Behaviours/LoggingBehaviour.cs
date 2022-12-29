@@ -1,6 +1,6 @@
 ﻿using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 
 namespace MovieApi.Application.Common.Behaviours;
 public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull

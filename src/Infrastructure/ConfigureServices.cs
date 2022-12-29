@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Infrastructure.Files;
 using MovieApi.Infrastructure.Identity;
 using MovieApi.Infrastructure.Persistence;
 using MovieApi.Infrastructure.Persistence.Interceptors;
+using MovieApi.Infrastructure.Persistence.Services;
 using MovieApi.Infrastructure.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IMovieService, MovieService>();
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))

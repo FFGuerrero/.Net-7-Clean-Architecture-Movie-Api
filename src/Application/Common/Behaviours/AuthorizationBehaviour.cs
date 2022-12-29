@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using MediatR;
 using MovieApi.Application.Common.Exceptions;
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Security;
 
 namespace MovieApi.Application.Common.Behaviours;

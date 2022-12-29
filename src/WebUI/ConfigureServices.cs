@@ -1,6 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using MovieApi.Application.Common.Interfaces;
+using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Infrastructure.Persistence;
 using MovieApi.WebApi.Filters;
 using MovieApi.WebApi.Services;
@@ -10,7 +10,7 @@ using NSwag.Generation.Processors.Security;
 namespace Microsoft.Extensions.DependencyInjection;
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebUIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -34,6 +34,9 @@ public static class ConfigureServices
         services.AddOpenApiDocument(configure =>
         {
             configure.Title = "MovieApi API";
+            configure.Version = "v1";
+            configure.UseXmlDocumentation = true;
+            configure.Description = "Movies API";
             configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,

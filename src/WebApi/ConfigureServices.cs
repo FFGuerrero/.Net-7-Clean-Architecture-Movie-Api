@@ -22,8 +22,10 @@ public static class ConfigureServices
             .AddDbContextCheck<ApplicationDbContext>();
 
         services.AddControllersWithViews(options =>
-            options.Filters.Add<ApiExceptionFilterAttribute>())
-                .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
+            options.Filters.Add<ApiExceptionFilterAttribute>());
+
+        services.AddFluentValidationAutoValidation(x => x.DisableDataAnnotationsValidation = false)
+                .AddFluentValidationClientsideAdapters();
 
         services.AddRazorPages();
 
@@ -39,16 +41,13 @@ public static class ConfigureServices
                 Version = "v1",
                 Title = "MovieApi API",
                 Description = "An ASP.NET Core Web API for managing Movies",
-                TermsOfService = new Uri("https://example.com/terms"),
                 Contact = new OpenApiContact
                 {
                     Name = "Example Contact",
-                    Url = new Uri("https://example.com/contact")
                 },
                 License = new OpenApiLicense
                 {
                     Name = "Example License",
-                    Url = new Uri("https://example.com/license")
                 }
             });
 
@@ -73,7 +72,7 @@ public static class ConfigureServices
                             Id = "Bearer"
                         }
                     },
-                    new string[]{}
+                    Array.Empty<string>()
                 }
             });
 

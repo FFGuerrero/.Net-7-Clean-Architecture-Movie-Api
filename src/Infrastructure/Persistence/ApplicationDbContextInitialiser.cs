@@ -59,6 +59,14 @@ public class ApplicationDbContextInitialiser
             await _roleManager.CreateAsync(administratorRole);
         }
 
+        // Default roles
+        var financeRole = new IdentityRole("FinanceUser");
+
+        if (_roleManager.Roles.All(r => r.Name != financeRole.Name))
+        {
+            await _roleManager.CreateAsync(financeRole);
+        }
+
         // Default users
         var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
 
@@ -66,6 +74,15 @@ public class ApplicationDbContextInitialiser
         {
             await _userManager.CreateAsync(administrator, "Administrator1!");
             await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name! });
+        }
+
+        // Finance default user
+        var finance = new ApplicationUser { UserName = "fguerrero", Email = "fguerrero@gmail.com" };
+
+        if (_userManager.Users.All(u => u.UserName != finance.UserName))
+        {
+            await _userManager.CreateAsync(finance, "Administrator1!");
+            await _userManager.AddToRolesAsync(finance, new[] { financeRole.Name! });
         }
 
         // Default data

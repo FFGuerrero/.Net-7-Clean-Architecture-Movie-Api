@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Data;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Mappings;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
+using MovieApi.Domain.Entities;
 
 namespace MovieApi.Infrastructure.Persistence.Services;
 public class MovieService : IMovieService
@@ -24,5 +26,13 @@ public class MovieService : IMovieService
             .OrderBy(x => x.Title)
             .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
+    }
+
+    public async Task<int> CreateMovie(Movie movie, CancellationToken cancellationToken)
+    {
+        await _context.Movies.AddAsync(movie, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return movie.Id;
     }
 }

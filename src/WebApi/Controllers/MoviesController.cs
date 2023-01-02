@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
+using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.WebApi.Controllers;
 
@@ -22,5 +23,16 @@ public class MoviesController : ApiControllerBase
     public async Task<ActionResult<PaginatedList<MovieDto>>> GetMoviesWithPagination([FromQuery] GetMoviesWithPaginationQuery query)
     {
         return await Mediator.Send(query);
+    }
+
+    /// <summary>
+    /// Adds a new movie
+    /// </summary>
+    /// <param name="command">Command parameters</param>
+    /// <returns>Created movie Id</returns>
+    [HttpPost]
+    public async Task<ActionResult<int>> CreateMovie(CreateMovieCommand command)
+    {
+        return await Mediator.Send(command);
     }
 }

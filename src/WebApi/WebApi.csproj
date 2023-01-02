@@ -33,8 +33,4 @@
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\api\" />
-    </ItemGroup>
 </Project>

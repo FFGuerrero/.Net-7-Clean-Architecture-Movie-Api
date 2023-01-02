@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MediatR;
+using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Mappings;
@@ -34,5 +36,19 @@ public class MovieService : IMovieService
         await _context.SaveChangesAsync(cancellationToken);
 
         return movie.Id;
+    }
+
+    public async Task<Unit> DeleteMovie(int id, CancellationToken cancellationToken)
+    {
+        var entity = await _context.Movies.FindAsync(new object[] { id }, cancellationToken);
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(Movie), id);
+        }
+
+        _context.Movies.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
     }
 }

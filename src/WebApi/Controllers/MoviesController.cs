@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Commands.CreateMovie;
+using MovieApi.Application.Movies.Commands.DeleteMovie;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.WebApi.Controllers;
 
@@ -34,5 +35,18 @@ public class MoviesController : ApiControllerBase
     public async Task<ActionResult<int>> CreateMovie(CreateMovieCommand command)
     {
         return await Mediator.Send(command);
+    }
+
+    /// <summary>
+    /// Delete a movie by Id
+    /// </summary>
+    /// <param name="id">Movie Id</param>
+    /// <returns></returns>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMovie(int id)
+    {
+        await Mediator.Send(new DeleteMovieCommand(id));
+
+        return NoContent();
     }
 }

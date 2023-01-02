@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
 using MovieApi.Application.Common.Interfaces.Services;
 
-namespace MovieApi.Application.Movies.Commands.CreateMovie;
-public class CreateMovieCommandValidator : AbstractValidator<CreateMovieCommand>
+namespace MovieApi.Application.Movies.Commands.UpdateMovie;
+public class UpdateMovieCommandValidator : AbstractValidator<UpdateMovieCommand>
 {
     private readonly IMovieService _movieService;
 
-    public CreateMovieCommandValidator(IMovieService movieService)
+    public UpdateMovieCommandValidator(IMovieService movieService)
     {
         _movieService = movieService;
 
+        RuleFor(c => c.Id).NotNull().GreaterThan(0);
         RuleFor(v => v.Title).NotEmpty()
                              .MaximumLength(50)
                              .MustAsync(BeUniqueTitle).WithMessage("The specified movie title already exists.");
@@ -19,8 +20,8 @@ public class CreateMovieCommandValidator : AbstractValidator<CreateMovieCommand>
         RuleFor(v => v.SalePrice).GreaterThanOrEqualTo(0);
     }
 
-    public async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken)
+    public async Task<bool> BeUniqueTitle(UpdateMovieCommand model, string title, CancellationToken cancellationToken)
     {
-        return await _movieService.IsUniqueTitle(title, cancellationToken);
+        return await _movieService.IsUniqueTitleById(model.Id, title, cancellationToken);
     }
 }

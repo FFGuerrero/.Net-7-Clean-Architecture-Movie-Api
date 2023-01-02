@@ -2,9 +2,10 @@
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Domain.Entities;
 
-namespace MovieApi.Application.Movies.Commands.CreateMovie;
-public record CreateMovieCommand : IRequest<int>
+namespace MovieApi.Application.Movies.Commands.UpdateMovie;
+public record UpdateMovieCommand : IRequest
 {
+    public int Id { get; init; }
     public string Title { get; init; } = default!;
     public string? Description { get; init; }
     public int Stock { get; init; }
@@ -13,19 +14,20 @@ public record CreateMovieCommand : IRequest<int>
     public bool Availability { get; init; }
 }
 
-public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int>
+public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand>
 {
     private readonly IMovieService _movieService;
 
-    public CreateMovieCommandHandler(IMovieService movieService)
+    public UpdateMovieCommandHandler(IMovieService movieService)
     {
         _movieService = movieService;
     }
 
-    public async Task<int> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateMovieCommand request, CancellationToken cancellationToken)
     {
         var movie = new Movie
         {
+            Id = request.Id,
             Title = request.Title.Trim(),
             Description = request.Description != null ? request.Description!.Trim() : null,
             Stock = request.Stock,
@@ -34,6 +36,6 @@ public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int
             Availability = request.Availability
         };
 
-        return await _movieService.CreateMovie(movie, cancellationToken);
+        return await _movieService.UpdateMovie(movie, cancellationToken);
     }
 }

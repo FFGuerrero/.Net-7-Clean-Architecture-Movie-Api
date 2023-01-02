@@ -2,6 +2,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Application.Common.Interfaces.Services;
@@ -50,5 +51,38 @@ public class MovieService : IMovieService
         await _context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
+    }
+
+    public async Task<Unit> UpdateMovie(Movie movie, CancellationToken cancellationToken)
+    {
+        var entity = await _context.Movies.FindAsync(new object[] { movie.Id }, cancellationToken);
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(Movie), movie.Id);
+        }
+
+        entity.Title = movie.Title;
+        entity.Description = movie.Description;
+        entity.Stock = movie.Stock;
+        entity.RentalPrice = movie.RentalPrice;
+        entity.SalePrice = movie.SalePrice;
+        entity.Availability = movie.Availability;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+
+    public async Task<bool> IsUniqueTitle(string title, CancellationToken cancellationToken)
+    {
+        return await _context.Movies
+            .AllAsync(l => l.Title != title, cancellationToken);
+    }
+
+    public async Task<bool> IsUniqueTitleById(int id, string title, CancellationToken cancellationToken)
+    {
+        return await _context.Movies
+            .Where(l => l.Id != id)
+            .AllAsync(l => l.Title != title, cancellationToken);
     }
 }

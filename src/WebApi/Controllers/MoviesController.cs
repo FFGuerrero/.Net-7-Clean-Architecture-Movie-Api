@@ -5,7 +5,6 @@ using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Commands.DeleteMovie;
 using MovieApi.Application.Movies.Commands.UpdateMovie;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
-using MovieApi.Application.TodoLists.Commands.UpdateTodoList;
 using MovieApi.WebApi.Controllers;
 
 namespace WebApi.Controllers;
@@ -13,8 +12,8 @@ namespace WebApi.Controllers;
 /// <summary>
 /// Movies API
 /// </summary>
-[AllowAnonymous]
 [Produces("application/json")]
+[AllowAnonymous]
 public class MoviesController : ApiControllerBase
 {
     /// <summary>

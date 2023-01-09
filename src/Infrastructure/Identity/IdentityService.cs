@@ -25,7 +25,7 @@ public class IdentityService : IIdentityService
     {
         var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
 
-        return user.UserName;
+        return user.UserName ?? string.Empty;
     }
 
     public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)

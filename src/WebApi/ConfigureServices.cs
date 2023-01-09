@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
+using System.Text;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Infrastructure.Persistence;
@@ -34,6 +37,14 @@ public static class ConfigureServices
             options.SuppressModelStateInvalidFilter = true);
 
         services.AddEndpointsApiExplorer();
+
+        services.ConfigureSwagger();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+    {
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
@@ -51,12 +62,12 @@ public static class ConfigureServices
                 }
             });
 
-            options.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
                 Description = "Type into the textbox: Bearer {your JWT token}.",
                 Name = "Authorization",
-                Type = SecuritySchemeType.Http,
+                Type = SecuritySchemeType.ApiKey,
                 BearerFormat = "JWT",
                 Scheme = "Bearer"
             });
@@ -81,5 +92,24 @@ public static class ConfigureServices
         });
 
         return services;
+    }
+
+    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(opt =>
+        {
+            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["Jwt:Issuer"],
+            ValidAudience = configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+        });
     }
 }

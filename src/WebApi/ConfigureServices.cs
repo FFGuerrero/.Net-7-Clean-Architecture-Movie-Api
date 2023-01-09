@@ -27,8 +27,7 @@ public static class ConfigureServices
         services.AddControllersWithViews(options =>
             options.Filters.Add<ApiExceptionFilterAttribute>());
 
-        services.AddFluentValidationAutoValidation(x => x.DisableDataAnnotationsValidation = false)
-                .AddFluentValidationClientsideAdapters();
+        services.AddFluentValidationClientsideAdapters();
 
         services.AddRazorPages();
 

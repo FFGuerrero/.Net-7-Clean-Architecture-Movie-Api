@@ -1,4 +1,5 @@
-﻿using MovieApi.Application.Common.Models;
+﻿using MovieApi.Application.Accounts.Commands.CreateUser;
+using MovieApi.Application.Common.Models;
 
 namespace MovieApi.Application.Common.Interfaces.Services;
 public interface IIdentityService
@@ -9,7 +10,9 @@ public interface IIdentityService
 
     Task<bool> AuthorizeAsync(string userId, string policyName);
 
-    Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
+    Task<string> CreateUserAsync(CreateUserDto createUserDto);
 
     Task<Result> DeleteUserAsync(string userId);
+    Task<bool> IsUniqueUserName(string userName, CancellationToken cancellationToken);
+    Task<bool> RoleNameExists(string roleName, CancellationToken cancellationToken);
 }

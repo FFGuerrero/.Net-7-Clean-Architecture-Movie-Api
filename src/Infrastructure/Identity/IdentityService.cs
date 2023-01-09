@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MovieApi.Application.Accounts.Commands.CreateUser;
+using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Models;
 
@@ -8,15 +10,18 @@ namespace MovieApi.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;    
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
     }
@@ -28,17 +33,34 @@ public class IdentityService : IIdentityService
         return user.UserName ?? string.Empty;
     }
 
-    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+    public async Task<string> CreateUserAsync(CreateUserDto createUserDto)
     {
         var user = new ApplicationUser
         {
-            UserName = userName,
-            Email = userName,
+            UserName = createUserDto.UserName,
+            Email = createUserDto.UserName,
+            PhoneNumber = createUserDto.PhoneNumber,
+            EmailConfirmed = false,
+            PhoneNumberConfirmed = false,
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var userResult = await _userManager.CreateAsync(user, createUserDto.Password);
+        var result = userResult.ToApplicationResult();
 
-        return (result.ToApplicationResult(), user.Id);
+        if (!result.Succeeded)
+        {
+            throw new IdentityValidationException(nameof(CreateUserDto.UserName), result.Errors.ToList());
+        }
+
+        var roleResult = await _userManager.AddToRoleAsync(user, createUserDto.RoleName);
+        result = roleResult.ToApplicationResult();
+
+        if (!result.Succeeded)
+        {
+            throw new IdentityValidationException(nameof(CreateUserDto.RoleName), result.Errors.ToList());
+        }
+
+        return user.Id;
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
@@ -76,5 +98,17 @@ public class IdentityService : IIdentityService
         var result = await _userManager.DeleteAsync(user);
 
         return result.ToApplicationResult();
+    }
+
+    public async Task<bool> IsUniqueUserName(string userName, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        return user is null;
+    }
+
+    public async Task<bool> RoleNameExists(string roleName, CancellationToken cancellationToken)
+    {
+        return await _roleManager.RoleExistsAsync(roleName);
     }
 }

@@ -68,7 +68,12 @@ public class ApplicationDbContextInitialiser
         }
 
         // Default users
-        var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var administrator = new ApplicationUser
+        {
+            UserName = "administrator@localhost",
+            Email = "administrator@localhost",
+            Name = "Admin"
+        };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
@@ -77,7 +82,14 @@ public class ApplicationDbContextInitialiser
         }
 
         // Finance default user
-        var finance = new ApplicationUser { UserName = "fguerrero", Email = "fguerrero@gmail.com" };
+        var finance = new ApplicationUser
+        {
+            UserName = "fguerrero",
+            Email = "fguerrero@gmail.com",
+            Name = "Freddy",
+            LastName = "Guerrero",
+            DateOfBirth = new DateTime(1991, 4, 21)
+        };
 
         if (_userManager.Users.All(u => u.UserName != finance.UserName))
         {

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -37,7 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
         base.OnModelCreating(builder);
 
-        builder.Entity<IdentityUser>(b =>
+        builder.Entity<ApplicationUser>(b =>
         {
             b.ToTable("Users");
         });
@@ -57,7 +56,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             b.ToTable("UserTokens");
         });
 
-        builder.Entity<IdentityRole>(b =>
+        builder.Entity<ApplicationRole>(b =>
         {
             b.ToTable("Roles");
         });

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MovieApi.Infrastructure.Persistence.Migrations;
+namespace MovieApi.Infrastructure.Migrations;
 
 /// <inheritdoc />
 public partial class CreateMovie : Migration
@@ -18,7 +18,7 @@ public partial class CreateMovie : Migration
                 Id = table.Column<int>(type: "int", nullable: false)
                     .Annotation("SqlServer:Identity", "1, 1"),
                 Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                 Stock = table.Column<int>(type: "int", nullable: false),
                 RentalPrice = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                 SalePrice = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),

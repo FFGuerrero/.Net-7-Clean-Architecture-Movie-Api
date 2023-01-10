@@ -9,7 +9,7 @@ using MovieApi.Infrastructure.Identity;
 using MovieApi.Infrastructure.Persistence.Interceptors;
 
 namespace MovieApi.Infrastructure.Persistence;
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>, IApplicationDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>, IApplicationDbContext
 {
     private readonly IMediator _mediator;
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;

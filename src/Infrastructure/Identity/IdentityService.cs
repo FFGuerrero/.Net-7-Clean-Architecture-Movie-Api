@@ -1,8 +1,6 @@
 ﻿using System.Security.Claims;
-using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MovieApi.Application.Accounts.Commands.CreateUser;
 using MovieApi.Application.Accounts.Commands.Login;
 using MovieApi.Application.Common.Exceptions;
@@ -13,14 +11,14 @@ namespace MovieApi.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
     private readonly ITokenService _tokenService;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+        RoleManager<ApplicationRole> roleManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
         ITokenService tokenService)

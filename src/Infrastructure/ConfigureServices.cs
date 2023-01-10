@@ -35,7 +35,7 @@ public static class ConfigureServices
 
         services.AddScoped<ApplicationDbContextInitialiser>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;
                     options.User.RequireUniqueEmail = true;

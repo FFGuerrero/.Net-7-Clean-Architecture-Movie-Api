@@ -10,17 +10,20 @@ using MovieApi.Application.Common.Mappings;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.Domain.Entities;
+using MovieApi.Domain.Enums;
 
 namespace MovieApi.Infrastructure.Persistence.Services;
 public class MovieService : IMovieService
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IIdentityService _identityService;
 
-    public MovieService(IApplicationDbContext context, IMapper mapper)
+    public MovieService(IApplicationDbContext context, IMapper mapper, IIdentityService identityService)
     {
         _context = context;
         _mapper = mapper;
+        _identityService = identityService;
     }
 
     public async Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
@@ -66,7 +69,12 @@ public class MovieService : IMovieService
         entity.Stock = movie.Stock;
         entity.RentalPrice = movie.RentalPrice;
         entity.SalePrice = movie.SalePrice;
-        entity.Availability = movie.Availability;
+
+        var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(ApplicationRoles.Administrator.ToString());
+        if (userIsInAdminRole)
+        {
+            entity.Availability = movie.Availability;
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -15,19 +15,22 @@ public class IdentityService : IIdentityService
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
     private readonly ITokenService _tokenService;
+    private readonly ICurrentUserService _currentUserService;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
-        ITokenService tokenService)
+        ITokenService tokenService,
+        ICurrentUserService currentUserService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
         _tokenService = tokenService;
+        _currentUserService = currentUserService;
     }
 
     public async Task<string> CreateUserAsync(CreateUserDto createUserDto)
@@ -62,6 +65,14 @@ public class IdentityService : IIdentityService
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
     {
+        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+
+        return user != null && await _userManager.IsInRoleAsync(user, role);
+    }
+
+    public async Task<bool> CurrentUserIsInRoleAsync(string role)
+    {
+        var userId = _currentUserService.UserId ?? string.Empty;
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
         return user != null && await _userManager.IsInRoleAsync(user, role);

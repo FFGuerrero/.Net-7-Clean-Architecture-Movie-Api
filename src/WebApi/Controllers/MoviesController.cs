@@ -13,7 +13,7 @@ namespace WebApi.Controllers;
 /// Movies API
 /// </summary>
 [Produces("application/json")]
-[AllowAnonymous]
+[Authorize]
 public class MoviesController : ApiControllerBase
 {
     /// <summary>
@@ -22,6 +22,7 @@ public class MoviesController : ApiControllerBase
     /// <param name="query">Query parameters</param>
     /// <returns>Paginated Movies</returns>
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<PaginatedList<MovieDto>>> GetMoviesWithPagination([FromQuery] GetMoviesWithPaginationQuery query)
     {
         return await Mediator.Send(query);
@@ -33,6 +34,7 @@ public class MoviesController : ApiControllerBase
     /// <param name="command">Command parameters</param>
     /// <returns>Created movie Id</returns>
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<int>> CreateMovie(CreateMovieCommand command)
     {
         return await Mediator.Send(command);
@@ -44,6 +46,7 @@ public class MoviesController : ApiControllerBase
     /// <param name="id">Movie Id</param>
     /// <returns></returns>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> DeleteMovie(int id)
     {
         await Mediator.Send(new DeleteMovieCommand(id));
@@ -58,6 +61,7 @@ public class MoviesController : ApiControllerBase
     /// <param name="command">Command parameters</param>
     /// <returns></returns>
     [HttpPut("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> Update(int id, UpdateMovieCommand command)
     {
         if (id != command.Id)

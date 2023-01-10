@@ -20,11 +20,11 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 
     public async Task<bool> BeUniqueUserName(string userName, CancellationToken cancellationToken)
     {
-        return await _identityService.IsUniqueUserName(userName, cancellationToken);
+        return await _identityService.IsUniqueUserNameAsync(userName, cancellationToken);
     }
 
     public async Task<bool> RoleNameExists(string roleName, CancellationToken cancellationToken)
     {
-        return await _identityService.RoleNameExists(roleName, cancellationToken);
+        return await _identityService.RoleNameExistsAsync(roleName, cancellationToken);
     }
 }

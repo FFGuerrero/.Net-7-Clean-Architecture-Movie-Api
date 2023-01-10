@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Application.Accounts.Commands.CreateUser;
+using MovieApi.Application.Accounts.Commands.Login;
 using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Models;
@@ -10,27 +13,23 @@ namespace MovieApi.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;    
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
+    private readonly ITokenService _tokenService;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        ITokenService tokenService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
-    }
-
-    public async Task<string> GetUserNameAsync(string userId)
-    {
-        var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-
-        return user.UserName ?? string.Empty;
+        _tokenService = tokenService;
     }
 
     public async Task<string> CreateUserAsync(CreateUserDto createUserDto)
@@ -74,7 +73,7 @@ public class IdentityService : IIdentityService
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        if (user == null)
+        if (user is null)
         {
             return false;
         }
@@ -84,6 +83,39 @@ public class IdentityService : IIdentityService
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
 
         return result.Succeeded;
+    }
+
+    public async Task<LoginResponseDto> LoginUserAsync(string userName, string password)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user is null)
+        {
+            throw new InvalidUserCredentialsException($"{nameof(userName)}, {nameof(password)}");
+        }
+
+        bool isValidPassword = await _userManager.CheckPasswordAsync(user, password);
+
+        if (!isValidPassword)
+        {
+            throw new InvalidUserCredentialsException($"{nameof(userName)}, {nameof(password)}");
+        }
+
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.NameIdentifier, user.Id),
+            new (ClaimTypes.Name, userName!)
+        };
+
+        var roles = await _userManager.GetRolesAsync(user);
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var (token, expires) = _tokenService.CreateJwtToken(claims);
+
+        return new LoginResponseDto()
+        {
+            Token = token,
+            Expires = expires
+        };
     }
 
     public async Task<Result> DeleteUserAsync(string userId)
@@ -100,14 +132,14 @@ public class IdentityService : IIdentityService
         return result.ToApplicationResult();
     }
 
-    public async Task<bool> IsUniqueUserName(string userName, CancellationToken cancellationToken)
+    public async Task<bool> IsUniqueUserNameAsync(string userName, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByNameAsync(userName);
 
         return user is null;
     }
 
-    public async Task<bool> RoleNameExists(string roleName, CancellationToken cancellationToken)
+    public async Task<bool> RoleNameExistsAsync(string roleName, CancellationToken cancellationToken)
     {
         return await _roleManager.RoleExistsAsync(roleName);
     }

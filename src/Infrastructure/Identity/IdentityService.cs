@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MovieApi.Application.Accounts.Commands.CreateUser;
 using MovieApi.Application.Accounts.Commands.Login;
@@ -16,6 +15,7 @@ public class IdentityService : IIdentityService
     private readonly IAuthorizationService _authorizationService;
     private readonly ITokenService _tokenService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -23,7 +23,8 @@ public class IdentityService : IIdentityService
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
         ITokenService tokenService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        SignInManager<ApplicationUser> signInManager)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -31,6 +32,7 @@ public class IdentityService : IIdentityService
         _authorizationService = authorizationService;
         _tokenService = tokenService;
         _currentUserService = currentUserService;
+        _signInManager = signInManager;
     }
 
     public async Task<string> CreateUserAsync(CreateUserDto createUserDto)
@@ -96,29 +98,19 @@ public class IdentityService : IIdentityService
 
     public async Task<LoginResponseDto> LoginUserAsync(string userName, string password)
     {
-        var user = await _userManager.FindByNameAsync(userName);
-        if (user is null)
+        var result = await _signInManager.PasswordSignInAsync(userName, password, false, lockoutOnFailure: true);
+
+        if (result.IsLockedOut)
+        {
+            throw new LockedOutUserException(nameof(userName));
+        }
+
+        if (!result.Succeeded)
         {
             throw new InvalidUserCredentialsException($"{nameof(userName)}, {nameof(password)}");
         }
 
-        bool isValidPassword = await _userManager.CheckPasswordAsync(user, password);
-
-        if (!isValidPassword)
-        {
-            throw new InvalidUserCredentialsException($"{nameof(userName)}, {nameof(password)}");
-        }
-
-        var claims = new List<Claim>
-        {
-            new (ClaimTypes.NameIdentifier, user.Id),
-            new (ClaimTypes.Name, userName!)
-        };
-
-        var roles = await _userManager.GetRolesAsync(user);
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-        var (token, expires) = _tokenService.CreateJwtToken(claims);
+        var (token, expires) = await _tokenService.GetTokenAsync(userName);
 
         return new LoginResponseDto()
         {

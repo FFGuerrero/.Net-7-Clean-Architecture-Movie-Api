@@ -18,6 +18,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
                 { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
                 { typeof(IdentityValidationException), HandleValidationException },
                 { typeof(InvalidUserCredentialsException), HandleValidationException },
+                { typeof(LockedOutUserException), HandleValidationException },
             };
     }
 

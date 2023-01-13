@@ -72,7 +72,8 @@ public class ApplicationDbContextInitialiser
         {
             UserName = "administrator@localhost",
             Email = "administrator@localhost",
-            Name = "Admin"
+            Name = "Admin",
+            EmailConfirmed = true
         };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
@@ -88,7 +89,8 @@ public class ApplicationDbContextInitialiser
             Email = "fguerrero@gmail.com",
             Name = "Freddy",
             LastName = "Guerrero",
-            DateOfBirth = new DateTime(1991, 4, 21)
+            DateOfBirth = new DateTime(1991, 4, 21),
+            EmailConfirmed = true
         };
 
         if (_userManager.Users.All(u => u.UserName != finance.UserName))

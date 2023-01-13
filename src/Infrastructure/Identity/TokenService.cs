@@ -6,9 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Application.Common.Interfaces.Services;
-using MovieApi.Infrastructure.Identity;
 
-namespace MovieApi.Infrastructure.Services;
+namespace MovieApi.Infrastructure.Identity;
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;

@@ -5,6 +5,7 @@ using MovieApi.Application.Accounts.Commands.Login;
 using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Models;
+using MovieApi.Domain.Enums;
 
 namespace MovieApi.Infrastructure.Identity;
 public class IdentityService : IIdentityService
@@ -72,12 +73,12 @@ public class IdentityService : IIdentityService
         return user != null && await _userManager.IsInRoleAsync(user, role);
     }
 
-    public async Task<bool> CurrentUserIsInRoleAsync(string role)
+    public async Task<bool> CurrentUserIsInRoleAsync(Role role)
     {
         var userId = _currentUserService.UserId ?? string.Empty;
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        return user != null && await _userManager.IsInRoleAsync(user, role);
+        return user != null && await _userManager.IsInRoleAsync(user, role.ToString());
     }
 
     public async Task<bool> AuthorizeAsync(string userId, string policyName)

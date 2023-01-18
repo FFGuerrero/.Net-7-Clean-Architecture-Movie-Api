@@ -11,7 +11,8 @@ public record UpdateMovieCommand : IRequest
     public int Stock { get; init; }
     public decimal RentalPrice { get; init; }
     public decimal SalePrice { get; init; }
-    public bool Availability { get; init; }
+    public bool IsAvailableForRental { get; init; }
+    public bool IsAvailableForSale { get; init; }
 }
 
 public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand>
@@ -33,7 +34,8 @@ public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand>
             Stock = request.Stock,
             RentalPrice = request.RentalPrice,
             SalePrice = request.SalePrice,
-            Availability = request.Availability
+            IsAvailableForRental = request.IsAvailableForRental,
+            IsAvailableForSale = request.IsAvailableForSale
         };
 
         return await _movieService.UpdateMovie(movie, cancellationToken);

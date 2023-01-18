@@ -10,5 +10,6 @@ public class MovieDto : IMapFrom<Movie>
     public int Stock { get; set; }
     public decimal RentalPrice { get; set; }
     public decimal SalePrice { get; set; }
-    public bool Availability { get; set; }
+    public bool IsAvailableForRental { get; set; }
+    public bool IsAvailableForSale { get; set; }
 }

@@ -28,8 +28,20 @@ public class MovieService : IMovieService
 
     public async Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Movies
-            .OrderBy(x => x.Title)
+        var movies = _context.Movies.AsQueryable();
+        var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(Role.Administrator);
+
+        if (!userIsInAdminRole)
+        {
+            movies = movies.Where(x => x.IsAvailableForRental || x.IsAvailableForSale);
+        }
+
+        if (request.Title is not null)
+        {
+            movies = movies.Where(x => x.Title.Contains(request.Title));
+        }
+
+        return await movies.OrderBy(x => x.Title)
             .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
@@ -69,12 +81,8 @@ public class MovieService : IMovieService
         entity.Stock = movie.Stock;
         entity.RentalPrice = movie.RentalPrice;
         entity.SalePrice = movie.SalePrice;
-
-        var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(ApplicationRoles.Administrator.ToString());
-        if (userIsInAdminRole)
-        {
-            entity.Availability = movie.Availability;
-        }
+        entity.IsAvailableForRental = movie.IsAvailableForRental;
+        entity.IsAvailableForSale = movie.IsAvailableForSale;
 
         await _context.SaveChangesAsync(cancellationToken);
 

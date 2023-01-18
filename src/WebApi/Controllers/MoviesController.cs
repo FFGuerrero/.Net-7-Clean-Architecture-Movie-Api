@@ -22,7 +22,7 @@ public class MoviesController : ApiControllerBase
     /// <param name="query">Query parameters</param>
     /// <returns>Paginated Movies</returns>
     [HttpGet]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<ActionResult<PaginatedList<MovieDto>>> GetMoviesWithPagination([FromQuery] GetMoviesWithPaginationQuery query)
     {
         return await Mediator.Send(query);

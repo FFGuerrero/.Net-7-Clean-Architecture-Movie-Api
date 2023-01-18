@@ -20,7 +20,10 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(t => t.SalePrice)
             .HasPrecision(10, 2);
 
-        builder.Property(t => t.Availability)
+        builder.Property(t => t.IsAvailableForRental)
+            .HasDefaultValue(false);
+
+        builder.Property(t => t.IsAvailableForSale)
             .HasDefaultValue(false);
     }
 }

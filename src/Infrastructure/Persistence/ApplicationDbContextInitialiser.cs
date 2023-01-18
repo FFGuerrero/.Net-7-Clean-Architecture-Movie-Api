@@ -127,7 +127,8 @@ public class ApplicationDbContextInitialiser
                 Stock = 5,
                 RentalPrice = 115,
                 SalePrice = 1350,
-                Availability = true
+                IsAvailableForRental = true,
+                IsAvailableForSale = true
             });
 
             await _context.SaveChangesAsync();

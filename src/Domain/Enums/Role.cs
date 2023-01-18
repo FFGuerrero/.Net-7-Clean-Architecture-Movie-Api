@@ -1,5 +1,5 @@
 ﻿namespace MovieApi.Domain.Enums;
-public enum ApplicationRoles
+public enum Role
 {
     Administrator,
     FinanceUser

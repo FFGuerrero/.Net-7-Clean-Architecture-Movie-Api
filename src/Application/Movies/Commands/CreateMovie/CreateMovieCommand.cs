@@ -10,7 +10,8 @@ public record CreateMovieCommand : IRequest<int>
     public int Stock { get; init; }
     public decimal RentalPrice { get; init; }
     public decimal SalePrice { get; init; }
-    public bool Availability { get; init; }
+    public bool IsAvailableForRental { get; init; }
+    public bool IsAvailableForSale { get; init; }
 }
 
 public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int>
@@ -31,7 +32,8 @@ public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int
             Stock = request.Stock,
             RentalPrice = request.RentalPrice,
             SalePrice = request.SalePrice,
-            Availability = request.Availability
+            IsAvailableForRental = request.IsAvailableForRental,
+            IsAvailableForSale = request.IsAvailableForSale
         };
 
         return await _movieService.CreateMovie(movie, cancellationToken);

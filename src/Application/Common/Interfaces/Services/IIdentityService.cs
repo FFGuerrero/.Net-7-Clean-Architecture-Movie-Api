@@ -1,4 +1,5 @@
-﻿using MovieApi.Application.Accounts.Commands.CreateUser;
+﻿using MovieApi.Application.Accounts.Commands.ChangeRole;
+using MovieApi.Application.Accounts.Commands.CreateUser;
 using MovieApi.Application.Accounts.Commands.Login;
 using MovieApi.Application.Common.Models;
 using MovieApi.Domain.Enums;
@@ -13,5 +14,7 @@ public interface IIdentityService
     Task<Result> DeleteUserAsync(string userId);
     Task<bool> IsUniqueUserNameAsync(string userName, CancellationToken cancellationToken);
     Task<bool> RoleNameExistsAsync(string roleName, CancellationToken cancellationToken);
+    Task<bool> UserNameExistsAsync(string userName, CancellationToken cancellationToken);
     Task<LoginResponseDto> LoginUserAsync(string userName, string password);
+    Task<Result> ChangeUserRoleAsync(ChangeRoleDto changeRoleDto);
 }

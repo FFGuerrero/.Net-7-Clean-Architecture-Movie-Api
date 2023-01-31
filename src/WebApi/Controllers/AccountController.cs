@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieApi.Application.Accounts.Commands.ChangeRole;
 using MovieApi.Application.Accounts.Commands.CreateUser;
 using MovieApi.Application.Accounts.Commands.Login;
+using MovieApi.Application.Common.Models;
 using MovieApi.WebApi.Controllers;
 
 namespace WebApi.Controllers;
@@ -33,6 +35,19 @@ public class AccountController : ApiControllerBase
     [Route("login")]
     [AllowAnonymous]
     public async Task<ActionResult<LoginResponseDto>> LoginUser(LoginCommand command)
+    {
+        return await Mediator.Send(command);
+    }
+
+    /// <summary>
+    /// Change role for existing user
+    /// </summary>
+    /// <param name="command">Command parameters</param>
+    /// <returns>Change role result</returns>
+    [HttpPost]
+    [Route("users/roles/change")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<Result>> ChangeUserRole(ChangeRoleCommand command)
     {
         return await Mediator.Send(command);
     }

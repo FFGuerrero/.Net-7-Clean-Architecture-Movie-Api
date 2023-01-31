@@ -113,7 +113,7 @@ public class MovieService : IMovieService
             .AllAsync(l => l.Title != title, cancellationToken);
     }
 
-    public async Task<MovieDto?> GetMovieById(int id, CancellationToken cancellationToken)
+    public async Task<MovieDto> GetMovieById(int id, CancellationToken cancellationToken)
     {
         var movie = await _context.Movies.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
         if (movie is null)

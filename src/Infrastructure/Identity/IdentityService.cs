@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using MovieApi.Application.Accounts.Commands.ChangeRole;
 using MovieApi.Application.Accounts.Commands.CreateUser;
 using MovieApi.Application.Accounts.Commands.Login;
 using MovieApi.Application.Common.Exceptions;
@@ -64,6 +65,47 @@ public class IdentityService : IIdentityService
         }
 
         return user.Id;
+    }
+
+    public async Task<Result> ChangeUserRoleAsync(ChangeRoleDto changeRoleDto)
+    {
+        var user = await _userManager.FindByNameAsync(changeRoleDto.UserName);
+
+        if (await _userManager.IsInRoleAsync(user!, changeRoleDto.RoleName))
+        {
+            throw new RoleAlreadyAssignedException(nameof(changeRoleDto.UserName));
+        }
+
+        if (changeRoleDto.RemoveAllExistingRoles)
+        {
+            List<string> errors = new();
+            bool succeeded = true;
+
+            var currentUserRoles = await _userManager.GetRolesAsync(user!);
+            foreach (var role in currentUserRoles)
+            {
+                var removeRoleResult = await _userManager.RemoveFromRoleAsync(user!, role);
+                var tmpResult = removeRoleResult.ToApplicationResult();
+                errors.AddRange(tmpResult.Errors);
+
+                if (!tmpResult.Succeeded)
+                {
+                    succeeded = false;
+                }
+            }
+
+            if (!succeeded)
+            {
+                throw new IdentityValidationException(nameof(changeRoleDto.RoleName), errors);
+            }
+        }
+
+        var roleResult = await _userManager.AddToRoleAsync(user!, changeRoleDto.RoleName);
+        var result = roleResult.ToApplicationResult();
+
+        return result.Succeeded
+            ? Result.Success()
+            : throw new IdentityValidationException(nameof(changeRoleDto.RoleName), result.Errors.ToList());
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
@@ -139,6 +181,13 @@ public class IdentityService : IIdentityService
         var user = await _userManager.FindByNameAsync(userName);
 
         return user is null;
+    }
+
+    public async Task<bool> UserNameExistsAsync(string userName, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        return user is not null;
     }
 
     public async Task<bool> RoleNameExistsAsync(string roleName, CancellationToken cancellationToken)

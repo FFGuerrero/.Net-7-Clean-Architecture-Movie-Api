@@ -13,7 +13,6 @@ public record CreateMovieCommand : IRequest<int>
     public bool IsAvailableForRental { get; init; }
     public bool IsAvailableForSale { get; init; }
 }
-
 public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int>
 {
     private readonly IMovieService _movieService;

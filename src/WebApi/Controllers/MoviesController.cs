@@ -4,6 +4,7 @@ using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Commands.DeleteMovie;
 using MovieApi.Application.Movies.Commands.UpdateMovie;
+using MovieApi.Application.Movies.Queries.GetMovieById;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.WebApi.Controllers;
 
@@ -26,6 +27,18 @@ public class MoviesController : ApiControllerBase
     public async Task<ActionResult<PaginatedList<MovieDto>>> GetMoviesWithPagination([FromQuery] GetMoviesWithPaginationQuery query)
     {
         return await Mediator.Send(query);
+    }
+
+    /// <summary>
+    /// Get movie detail by Id
+    /// </summary>
+    /// <param name="id">Movie Id</param>
+    /// <returns>Movie entity fetched by Id</returns>
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MovieDto>> GetMoviesById([FromRoute] int id)
+    {
+        return await Mediator.Send(new GetMovieByIdQuery() { Id = id });
     }
 
     /// <summary>

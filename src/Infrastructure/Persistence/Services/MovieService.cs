@@ -41,8 +41,19 @@ public class MovieService : IMovieService
             movies = movies.Where(x => x.Title.Contains(request.Title));
         }
 
-        return await movies.OrderBy(x => x.Title)
-            .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+        if (request.IsAvailableForRental is not null && userIsInAdminRole)
+        {
+            movies = movies.Where(x => x.IsAvailableForRental == request.IsAvailableForRental);
+        }
+
+        if (request.IsAvailableForSale is not null && userIsInAdminRole)
+        {
+            movies = movies.Where(x => x.IsAvailableForSale == request.IsAvailableForSale);
+        }
+
+        movies = movies.OrderBy(x => x.Title);
+
+        return await movies.ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 
@@ -100,5 +111,16 @@ public class MovieService : IMovieService
         return await _context.Movies
             .Where(l => l.Id != id)
             .AllAsync(l => l.Title != title, cancellationToken);
+    }
+
+    public async Task<MovieDto?> GetMovieById(int id, CancellationToken cancellationToken)
+    {
+        var movie = await _context.Movies.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+        if (movie is null)
+        {
+            throw new NotFoundException(nameof(Movie), id);
+        }
+
+        return _mapper.Map<Movie, MovieDto>(movie!);
     }
 }

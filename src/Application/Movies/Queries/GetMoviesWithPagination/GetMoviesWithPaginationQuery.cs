@@ -6,7 +6,9 @@ namespace MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 public record GetMoviesWithPaginationQuery : IRequest<PaginatedList<MovieDto>>
 {
     public int MovieId { get; init; }
-    public string? Title { get; set; }
+    public string? Title { get; init; }
+    public bool? IsAvailableForRental { get; init; }
+    public bool? IsAvailableForSale { get; init; }
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }

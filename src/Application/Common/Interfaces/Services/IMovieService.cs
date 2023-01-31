@@ -13,4 +13,5 @@ public interface IMovieService
     Task<bool> IsUniqueTitle(string title, CancellationToken cancellationToken);
     Task<bool> IsUniqueTitleById(int id, string title, CancellationToken cancellationToken);
     Task<MovieDto> GetMovieById(int id, CancellationToken cancellationToken);
+    Task<Unit> SaleMovie(int movieId, CancellationToken cancellationToken);
 }

@@ -9,4 +9,6 @@ public class Movie : BaseAuditableEntity
     public decimal SalePrice { get; set; }
     public bool IsAvailableForRental { get; set; }
     public bool IsAvailableForSale { get; set; }
+
+    public List<MovieSale>? MovieSales { get; set; }
 }

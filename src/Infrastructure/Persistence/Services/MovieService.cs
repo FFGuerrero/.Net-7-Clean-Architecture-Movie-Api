@@ -18,12 +18,17 @@ public class MovieService : IMovieService
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IIdentityService _identityService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public MovieService(IApplicationDbContext context, IMapper mapper, IIdentityService identityService)
+    public MovieService(IApplicationDbContext context,
+        IMapper mapper,
+        IIdentityService identityService,
+        ICurrentUserService currentUserService)
     {
         _context = context;
         _mapper = mapper;
         _identityService = identityService;
+        _currentUserService = currentUserService;
     }
 
     public async Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
@@ -122,5 +127,40 @@ public class MovieService : IMovieService
         }
 
         return _mapper.Map<Movie, MovieDto>(movie!);
+    }
+
+    public async Task<Unit> SaleMovie(int movieId, CancellationToken cancellationToken)
+    {
+        var entity = await _context.Movies.FindAsync(new object[] { movieId }, cancellationToken);
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(Movie), movieId);
+        }
+
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            entity.Stock--;
+            entity.IsAvailableForRental = entity.Stock > 0;
+            entity.IsAvailableForSale = entity.Stock > 0;
+
+            MovieSale movieSale = new()
+            {
+                MovieId = movieId,
+                UserId = _currentUserService.UserId!,
+                Price = entity.SalePrice
+            };
+            _context.MovieSales.Add(movieSale);
+
+            await _context.SaveChangesAsync(cancellationToken);
+            transaction.Commit();
+        }
+        catch (Exception)
+        {
+            transaction?.Rollback();
+            throw;
+        }
+
+        return Unit.Value;
     }
 }

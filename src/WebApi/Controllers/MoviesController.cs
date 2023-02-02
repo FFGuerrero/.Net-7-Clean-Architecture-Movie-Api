@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Commands.DeleteMovie;
+using MovieApi.Application.Movies.Commands.SaleMovie;
 using MovieApi.Application.Movies.Commands.UpdateMovie;
 using MovieApi.Application.Movies.Queries.GetMovieById;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
@@ -34,6 +35,7 @@ public class MoviesController : ApiControllerBase
     /// </summary>
     /// <param name="id">Movie Id</param>
     /// <returns>Movie entity fetched by Id</returns>
+    /// <response code="400">Validation error</response>
     [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<MovieDto>> GetMoviesById([FromRoute] int id)
@@ -46,6 +48,7 @@ public class MoviesController : ApiControllerBase
     /// </summary>
     /// <param name="command">Command parameters</param>
     /// <returns>Created movie Id</returns>
+    /// <response code="400">Validation error</response>
     [HttpPost]
     [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<int>> CreateMovie(CreateMovieCommand command)
@@ -58,6 +61,8 @@ public class MoviesController : ApiControllerBase
     /// </summary>
     /// <param name="id">Movie Id</param>
     /// <returns></returns>
+    /// <response code="204">Success deleted</response>
+    /// <response code="400">Validation error</response>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> DeleteMovie(int id)
@@ -73,6 +78,8 @@ public class MoviesController : ApiControllerBase
     /// <param name="id">Movie id</param>
     /// <param name="command">Command parameters</param>
     /// <returns></returns>
+    /// <response code="204">Success updated</response>
+    /// <response code="400">Validation error</response>
     [HttpPut("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> Update(int id, UpdateMovieCommand command)
@@ -82,6 +89,22 @@ public class MoviesController : ApiControllerBase
             return BadRequest();
         }
 
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Sell a movie
+    /// </summary>
+    /// <param name="command">Command parameters</param>
+    /// <response code="204">Success</response>
+    /// <response code="400">Validation error</response>
+    [HttpPost]
+    [Route("sale")]
+    [Authorize]
+    public async Task<ActionResult> SaleMovie(SaleMovieCommand command)
+    {
         await Mediator.Send(command);
 
         return NoContent();

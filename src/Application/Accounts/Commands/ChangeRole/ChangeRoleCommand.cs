@@ -3,13 +3,13 @@ using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Models;
 
 namespace MovieApi.Application.Accounts.Commands.ChangeRole;
-public class ChangeRoleCommand : IRequest<Result>
+public class ChangeRoleCommand : IRequest
 {
     public string UserName { get; init; } = default!;
     public string RoleName { get; init; } = default!;
 }
 
-public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Result>
+public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand>
 {
     private readonly IIdentityService _identityService;
 
@@ -18,7 +18,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Resul
         _identityService = identityService;
     }
 
-    public async Task<Result> Handle(ChangeRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ChangeRoleCommand request, CancellationToken cancellationToken)
     {
         var changeRoleDto = new ChangeRoleDto()
         {
@@ -27,7 +27,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Resul
             RemoveAllExistingRoles = true
         };
 
-        var result = await _identityService.ChangeUserRoleAsync(changeRoleDto);
-        return result;
+        await _identityService.ChangeUserRoleAsync(changeRoleDto);
+        return Unit.Value;
     }
 }

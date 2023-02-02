@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Application.Common.Exceptions;
 using MovieApi.Application.Common.Interfaces;
@@ -70,7 +69,7 @@ public class MovieService : IMovieService
         return movie.Id;
     }
 
-    public async Task<Unit> DeleteMovie(int id, CancellationToken cancellationToken)
+    public async Task DeleteMovie(int id, CancellationToken cancellationToken)
     {
         var entity = await _context.Movies.FindAsync(new object[] { id }, cancellationToken);
         if (entity is null)
@@ -80,11 +79,9 @@ public class MovieService : IMovieService
 
         _context.Movies.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 
-    public async Task<Unit> UpdateMovie(Movie movie, CancellationToken cancellationToken)
+    public async Task UpdateMovie(Movie movie, CancellationToken cancellationToken)
     {
         var entity = await _context.Movies.FindAsync(new object[] { movie.Id }, cancellationToken);
         if (entity is null)
@@ -101,8 +98,6 @@ public class MovieService : IMovieService
         entity.IsAvailableForSale = movie.IsAvailableForSale;
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 
     public async Task<bool> IsUniqueTitle(string title, CancellationToken cancellationToken)
@@ -129,7 +124,7 @@ public class MovieService : IMovieService
         return _mapper.Map<Movie, MovieDto>(movie!);
     }
 
-    public async Task<Unit> SaleMovie(int movieId, CancellationToken cancellationToken)
+    public async Task SaleMovie(int movieId, CancellationToken cancellationToken)
     {
         var entity = await _context.Movies.FindAsync(new object[] { movieId }, cancellationToken);
         if (entity is null)
@@ -137,12 +132,16 @@ public class MovieService : IMovieService
             throw new NotFoundException(nameof(Movie), movieId);
         }
 
+        if (!entity.IsAvailableForSale)
+            throw new UnavailableMovieForSaleException(nameof(Movie.IsAvailableForSale));
+
+        if (entity.Stock == 0)
+            throw new OutOfStockMovieException(nameof(Movie.Stock));
+
         using var transaction = _context.Database.BeginTransaction();
         try
         {
             entity.Stock--;
-            entity.IsAvailableForRental = entity.Stock > 0;
-            entity.IsAvailableForSale = entity.Stock > 0;
 
             MovieSale movieSale = new()
             {
@@ -160,7 +159,5 @@ public class MovieService : IMovieService
             transaction?.Rollback();
             throw;
         }
-
-        return Unit.Value;
     }
 }

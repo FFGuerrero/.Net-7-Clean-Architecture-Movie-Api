@@ -15,6 +15,7 @@ public class DeleteMovieCommandHandler : IRequestHandler<DeleteMovieCommand>
 
     public async Task<Unit> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
     {
-        return await _movieService.DeleteMovie(request.Id, cancellationToken);
+        await _movieService.DeleteMovie(request.Id, cancellationToken);
+        return Unit.Value;
     }
 }

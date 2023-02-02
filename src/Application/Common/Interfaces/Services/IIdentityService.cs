@@ -16,5 +16,5 @@ public interface IIdentityService
     Task<bool> RoleNameExistsAsync(string roleName, CancellationToken cancellationToken);
     Task<bool> UserNameExistsAsync(string userName, CancellationToken cancellationToken);
     Task<LoginResponseDto> LoginUserAsync(string userName, string password);
-    Task<Result> ChangeUserRoleAsync(ChangeRoleDto changeRoleDto);
+    Task ChangeUserRoleAsync(ChangeRoleDto changeRoleDto);
 }

@@ -67,7 +67,7 @@ public class IdentityService : IIdentityService
         return user.Id;
     }
 
-    public async Task<Result> ChangeUserRoleAsync(ChangeRoleDto changeRoleDto)
+    public async Task ChangeUserRoleAsync(ChangeRoleDto changeRoleDto)
     {
         var user = await _userManager.FindByNameAsync(changeRoleDto.UserName);
 
@@ -103,9 +103,8 @@ public class IdentityService : IIdentityService
         var roleResult = await _userManager.AddToRoleAsync(user!, changeRoleDto.RoleName);
         var result = roleResult.ToApplicationResult();
 
-        return result.Succeeded
-            ? Result.Success()
-            : throw new IdentityValidationException(nameof(changeRoleDto.RoleName), result.Errors.ToList());
+        if (!result.Succeeded)
+            throw new IdentityValidationException(nameof(changeRoleDto.RoleName), result.Errors.ToList());
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)

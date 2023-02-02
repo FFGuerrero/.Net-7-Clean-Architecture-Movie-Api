@@ -218,7 +218,7 @@ namespace MovieApi.Infrastructure.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MovieSale");
+                    b.ToTable("MovieSales");
                 });
 
             modelBuilder.Entity("MovieApi.Domain.Entities.TodoItem", b =>

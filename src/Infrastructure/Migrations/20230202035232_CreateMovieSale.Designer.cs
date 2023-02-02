@@ -12,7 +12,7 @@ using MovieApi.Infrastructure.Persistence;
 namespace MovieApi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230131194642_CreateMovieSale")]
+    [Migration("20230202035232_CreateMovieSale")]
     partial class CreateMovieSale
     {
         /// <inheritdoc />
@@ -221,7 +221,7 @@ namespace MovieApi.Infrastructure.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MovieSale");
+                    b.ToTable("MovieSales");
                 });
 
             modelBuilder.Entity("MovieApi.Domain.Entities.TodoItem", b =>

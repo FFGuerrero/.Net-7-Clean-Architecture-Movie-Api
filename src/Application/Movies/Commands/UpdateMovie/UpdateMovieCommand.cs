@@ -38,6 +38,7 @@ public class UpdateMovieCommandHandler : IRequestHandler<UpdateMovieCommand>
             IsAvailableForSale = request.IsAvailableForSale
         };
 
-        return await _movieService.UpdateMovie(movie, cancellationToken);
+        await _movieService.UpdateMovie(movie, cancellationToken);
+        return Unit.Value;
     }
 }

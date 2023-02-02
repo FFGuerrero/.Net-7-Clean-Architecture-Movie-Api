@@ -20,6 +20,8 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
                 { typeof(InvalidUserCredentialsException), HandleValidationException },
                 { typeof(LockedOutUserException), HandleValidationException },
                 { typeof(RoleAlreadyAssignedException), HandleValidationException },
+                { typeof(UnavailableMovieForSaleException), HandleValidationException },
+                { typeof(OutOfStockMovieException), HandleValidationException },
             };
     }
 

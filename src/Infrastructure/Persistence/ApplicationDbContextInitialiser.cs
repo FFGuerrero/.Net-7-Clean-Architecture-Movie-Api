@@ -133,5 +133,37 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        if (!_context.MovieRentalPlans.Any())
+        {
+            _context.MovieRentalPlans.Add(new MovieRentalPlan
+            {
+                Name = "Plan 1",
+                Description = "Plan 1 for 1 Day",
+                DurationInDays = 1,
+                PenaltyAmount = 100,
+                IsAvailable = true
+            });
+
+            _context.MovieRentalPlans.Add(new MovieRentalPlan
+            {
+                Name = "Plan 2",
+                Description = "Plan 2 for 7 Days",
+                DurationInDays = 7,
+                PenaltyAmount = 500,
+                IsAvailable = true
+            });
+
+            _context.MovieRentalPlans.Add(new MovieRentalPlan
+            {
+                Name = "Plan 3",
+                Description = "Plan 3 for 15 Days",
+                DurationInDays = 15,
+                PenaltyAmount = 500,
+                IsAvailable = true
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

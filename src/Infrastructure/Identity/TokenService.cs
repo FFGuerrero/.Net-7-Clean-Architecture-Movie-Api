@@ -31,13 +31,14 @@ public class TokenService : ITokenService
         var user = await _userManager.FindByNameAsync(userName);
         var roles = await _userManager.GetRolesAsync(user!);
         var now = _dateTime.Now;
+        var issuedAtSeconds = new DateTimeOffset(now).ToUnixTimeSeconds();
 
         var claims = new List<Claim>
         {
             new (ClaimTypes.NameIdentifier, user!.Id),
             new (ClaimTypes.Name, userName!),
             new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new (JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString()),
+            new (JwtRegisteredClaimNames.Iat, issuedAtSeconds.ToString(), ClaimValueTypes.Double),
         };
 
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

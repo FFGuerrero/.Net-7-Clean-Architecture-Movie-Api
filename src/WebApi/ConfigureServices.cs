@@ -93,7 +93,7 @@ public static class ConfigureServices
         return services;
     }
 
-    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(opt =>
         {
@@ -111,5 +111,7 @@ public static class ConfigureServices
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
             ClockSkew = TimeSpan.Zero
         });
+
+        return services;
     }
 }

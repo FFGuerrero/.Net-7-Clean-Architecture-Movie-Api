@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using MovieApi.Infrastructure.Persistence;
 namespace MovieApi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230202153237_CreateMovieRentalPlan")]
+    partial class CreateMovieRentalPlan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,60 +184,6 @@ namespace MovieApi.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
-                });
-
-            modelBuilder.Entity("MovieApi.Domain.Entities.MovieRental", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MovieRentalPlanId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PenaltyAmount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime?>("RentDate")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("MovieRentalPlanId");
-
-                    b.ToTable("MovieRental");
                 });
 
             modelBuilder.Entity("MovieApi.Domain.Entities.MovieRentalPlan", b =>
@@ -551,25 +500,6 @@ namespace MovieApi.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieApi.Domain.Entities.MovieRental", b =>
-                {
-                    b.HasOne("MovieApi.Domain.Entities.Movie", "Movie")
-                        .WithMany("MovieRentals")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("MovieApi.Domain.Entities.MovieRentalPlan", "MovieRentalPlan")
-                        .WithMany("MovieRentals")
-                        .HasForeignKey("MovieRentalPlanId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("MovieRentalPlan");
-                });
-
             modelBuilder.Entity("MovieApi.Domain.Entities.MovieSale", b =>
                 {
                     b.HasOne("MovieApi.Domain.Entities.Movie", "Movie")
@@ -617,14 +547,7 @@ namespace MovieApi.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieApi.Domain.Entities.Movie", b =>
                 {
-                    b.Navigation("MovieRentals");
-
                     b.Navigation("MovieSales");
-                });
-
-            modelBuilder.Entity("MovieApi.Domain.Entities.MovieRentalPlan", b =>
-                {
-                    b.Navigation("MovieRentals");
                 });
 
             modelBuilder.Entity("MovieApi.Domain.Entities.TodoList", b =>

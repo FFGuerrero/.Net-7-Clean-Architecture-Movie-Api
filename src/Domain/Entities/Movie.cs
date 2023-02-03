@@ -11,4 +11,5 @@ public class Movie : BaseAuditableEntity
     public bool IsAvailableForSale { get; set; }
 
     public List<MovieSale>? MovieSales { get; set; }
+    public List<MovieRental>? MovieRentals { get; set; }
 }

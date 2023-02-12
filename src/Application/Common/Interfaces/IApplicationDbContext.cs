@@ -13,6 +13,8 @@ public interface IApplicationDbContext
 
     DbSet<MovieSale> MovieSales { get; }
 
+    DbSet<MovieRental> MovieRentals { get; }
+
     DbSet<MovieRentalPlan> MovieRentalPlans { get; }
 
     DatabaseFacade Database { get; }

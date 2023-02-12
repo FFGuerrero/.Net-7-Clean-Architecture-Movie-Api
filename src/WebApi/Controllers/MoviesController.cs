@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Commands.DeleteMovie;
+using MovieApi.Application.Movies.Commands.RentMovie;
+using MovieApi.Application.Movies.Commands.ReturnMovie;
 using MovieApi.Application.Movies.Commands.SaleMovie;
 using MovieApi.Application.Movies.Commands.UpdateMovie;
 using MovieApi.Application.Movies.Queries.GetMovieById;
@@ -104,6 +106,38 @@ public class MoviesController : ApiControllerBase
     [Route("sale")]
     [Authorize]
     public async Task<ActionResult> SaleMovie(SaleMovieCommand command)
+    {
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Rent a movie
+    /// </summary>
+    /// <param name="command">Command parameters</param>
+    /// <response code="204">Success</response>
+    /// <response code="400">Validation error</response>
+    [HttpPost]
+    [Route("rent")]
+    [Authorize]
+    public async Task<ActionResult> RentMovie(RentMovieCommand command)
+    {
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Return a movie
+    /// </summary>
+    /// <param name="command">Command parameters</param>
+    /// <response code="204">Success</response>
+    /// <response code="400">Validation error</response>
+    [HttpPost]
+    [Route("rentals/return")]
+    [Authorize]
+    public async Task<ActionResult> ReturnMovie(ReturnMovieCommand command)
     {
         await Mediator.Send(command);
 

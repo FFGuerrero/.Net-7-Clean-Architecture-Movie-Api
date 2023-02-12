@@ -209,6 +209,10 @@ namespace MovieApi.Infrastructure.Migrations
                     b.Property<int>("MovieRentalPlanId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("PaidPenaltyAmount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<decimal>("PenaltyAmount")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
@@ -222,6 +226,10 @@ namespace MovieApi.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ReturnDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReturnedOnDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -234,7 +242,7 @@ namespace MovieApi.Infrastructure.Migrations
 
                     b.HasIndex("MovieRentalPlanId");
 
-                    b.ToTable("MovieRental");
+                    b.ToTable("MovieRentals");
                 });
 
             modelBuilder.Entity("MovieApi.Domain.Entities.MovieRentalPlan", b =>

@@ -160,4 +160,88 @@ public class MovieService : IMovieService
             throw;
         }
     }
+
+    public async Task RentMovie(int movieId, int movieRentalPlanId, CancellationToken cancellationToken)
+    {
+        var entity = await _context.Movies.FindAsync(new object[] { movieId }, cancellationToken);
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(Movie), movieId);
+        }
+
+        var movieRentalPlan = await _context.MovieRentalPlans.FindAsync(new object[] { movieRentalPlanId }, cancellationToken);
+        if (movieRentalPlan is null)
+        {
+            throw new NotFoundException(nameof(MovieRentalPlan), movieRentalPlanId);
+        }
+
+        if (!entity.IsAvailableForRental)
+            throw new UnavailableMovieForSaleException(nameof(Movie.IsAvailableForSale));
+
+        if (entity.Stock == 0)
+            throw new OutOfStockMovieException(nameof(Movie.Stock));
+
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            entity.Stock--;
+            var rentalDate = DateTime.Now;
+
+            MovieRental movieRental = new()
+            {
+                MovieId = movieId,
+                UserId = _currentUserService.UserId!,
+                MovieRentalPlanId = movieRentalPlanId,
+                Price = entity.RentalPrice,
+                RentDate = rentalDate,
+                ReturnDate = rentalDate.AddDays(movieRentalPlan.DurationInDays),
+                PenaltyAmount = movieRentalPlan.PenaltyAmount
+            };
+            _context.MovieRentals.Add(movieRental);
+
+            await _context.SaveChangesAsync(cancellationToken);
+            transaction.Commit();
+        }
+        catch (Exception)
+        {
+            transaction?.Rollback();
+            throw;
+        }
+    }
+
+    public async Task ReturnMovie(int movieRentalId, CancellationToken cancellationToken)
+    {
+        var entity = await _context.MovieRentals
+            .Include(x => x.Movie)
+            .FirstOrDefaultAsync(x => x.Id == movieRentalId && x.ReturnedOnDate == null, cancellationToken);
+
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(MovieRental), movieRentalId);
+        }
+
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            var returnedOnDate = DateTime.Now;
+            decimal penalty = 0;
+
+            if (returnedOnDate > entity.ReturnDate)
+            {
+                penalty = entity.PenaltyAmount;
+            }
+
+            entity.Movie!.Stock++;
+            entity.ReturnedOnDate = returnedOnDate;
+            entity.PaidPenaltyAmount = penalty;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            transaction.Commit();
+        }
+        catch (Exception)
+        {
+            transaction?.Rollback();
+            throw;
+        }
+    }
 }

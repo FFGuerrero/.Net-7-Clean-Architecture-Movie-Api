@@ -32,6 +32,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<MovieSale> MovieSales => Set<MovieSale>();
 
+    public DbSet<MovieRental> MovieRentals => Set<MovieRental>();
+
     public DbSet<MovieRentalPlan> MovieRentalPlans => Set<MovieRentalPlan>();
 
     protected override void OnModelCreating(ModelBuilder builder)

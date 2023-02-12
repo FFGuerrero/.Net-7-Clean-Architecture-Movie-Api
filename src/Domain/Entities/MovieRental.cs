@@ -8,6 +8,8 @@ public class MovieRental : BaseAuditableEntity
     public DateTime? RentDate { get; set; }
     public DateTime? ReturnDate { get; set; }
     public decimal PenaltyAmount { get; set; }
+    public DateTime? ReturnedOnDate { get; set; }
+    public decimal? PaidPenaltyAmount { get; set; }
 
     public Movie? Movie { get; set; }
     public MovieRentalPlan? MovieRentalPlan { get; set; }

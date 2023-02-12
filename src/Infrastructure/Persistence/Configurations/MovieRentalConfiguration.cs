@@ -17,14 +17,21 @@ public class MovieRentalConfiguration : IEntityTypeConfiguration<MovieRental>
             .IsRequired();
 
         builder.Property(t => t.Price)
-            .HasPrecision(10, 2);
+            .HasPrecision(10, 2)
+            .IsRequired();
 
         builder.Property(t => t.RentDate)
             .IsRequired();
 
-        builder.Property(t => t.ReturnDate);
+        builder.Property(t => t.ReturnDate)
+            .IsRequired();
 
         builder.Property(t => t.PenaltyAmount)
+            .HasPrecision(10, 2);
+
+        builder.Property(t => t.ReturnedOnDate);
+
+        builder.Property(t => t.PaidPenaltyAmount)
             .HasPrecision(10, 2);
 
         builder.HasOne(e => e.Movie)

@@ -4,7 +4,7 @@ using MovieApi.Application.Common.Interfaces.Services;
 namespace MovieApi.Application.Movies.Commands.SaleMovie;
 public record SaleMovieCommand : IRequest
 {
-    public int MovieId { get; set; }
+    public int MovieId { get; init; }
 }
 
 public class SaleMovieCommandHandler : IRequestHandler<SaleMovieCommand>

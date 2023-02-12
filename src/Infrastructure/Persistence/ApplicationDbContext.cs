@@ -36,6 +36,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<MovieRentalPlan> MovieRentalPlans => Set<MovieRentalPlan>();
 
+    public DbSet<UserMovieLike> UserMovieLikes => Set<UserMovieLike>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

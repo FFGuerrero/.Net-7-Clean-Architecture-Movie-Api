@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Commands.CreateMovie;
 using MovieApi.Application.Movies.Commands.DeleteMovie;
+using MovieApi.Application.Movies.Commands.LikeMovieToggle;
 using MovieApi.Application.Movies.Commands.RentMovie;
 using MovieApi.Application.Movies.Commands.ReturnMovie;
 using MovieApi.Application.Movies.Commands.SaleMovie;
@@ -99,15 +100,15 @@ public class MoviesController : ApiControllerBase
     /// <summary>
     /// Sell a movie
     /// </summary>
-    /// <param name="command">Command parameters</param>
+    /// <param name="movieId">Movie Id</param>
     /// <response code="204">Success</response>
     /// <response code="400">Validation error</response>
     [HttpPost]
-    [Route("sale")]
+    [Route("{movieId}/sale")]
     [Authorize]
-    public async Task<ActionResult> SaleMovie(SaleMovieCommand command)
+    public async Task<ActionResult> SaleMovie([FromRoute] int movieId)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new SaleMovieCommand() { MovieId = movieId });
 
         return NoContent();
     }
@@ -131,16 +132,30 @@ public class MoviesController : ApiControllerBase
     /// <summary>
     /// Return a movie
     /// </summary>
-    /// <param name="command">Command parameters</param>
+    /// <param name="movieRentalId">Movie Rental Id</param>
     /// <response code="204">Success</response>
     /// <response code="400">Validation error</response>
     [HttpPost]
-    [Route("rentals/return")]
+    [Route("rentals/{movieRentalId}/return")]
     [Authorize]
-    public async Task<ActionResult> ReturnMovie(ReturnMovieCommand command)
+    public async Task<ActionResult> ReturnMovie([FromRoute] int movieRentalId)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new ReturnMovieCommand() { MovieRentalId = movieRentalId });
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Add or remove like for a movie
+    /// </summary>
+    /// <param name="movieId">Movie Id</param>
+    /// <response code="204">Success</response>
+    /// <response code="400">Validation error</response>
+    [HttpPost]
+    [Route("{movieId}/like")]
+    [Authorize]
+    public async Task<ActionResult<bool>> LikeMovieToggle([FromRoute] int movieId)
+    {
+        return await Mediator.Send(new LikeMovieToggleCommand() { MovieId = movieId });
     }
 }

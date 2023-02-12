@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using MovieApi.Application.Common.Interfaces.Services;
-using MovieApi.Application.Movies.Commands.RentMovie;
 
 namespace MovieApi.Application.Movies.Commands.ReturnMovie;
 public record ReturnMovieCommand : IRequest
 {
-    public int MovieRentalId { get; set; }
+    public int MovieRentalId { get; init; }
 }
 
 public class ReturnMovieCommandHandler : IRequestHandler<ReturnMovieCommand>

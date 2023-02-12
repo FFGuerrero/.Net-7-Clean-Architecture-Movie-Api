@@ -2,7 +2,7 @@
 using MovieApi.Domain.Entities;
 
 namespace MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
-public class MovieDto : IMapFrom<Movie>
+public class MovieDto
 {
     public int Id { get; set; }
     public string Title { get; set; } = null!;
@@ -12,4 +12,5 @@ public class MovieDto : IMapFrom<Movie>
     public decimal SalePrice { get; set; }
     public bool IsAvailableForRental { get; set; }
     public bool IsAvailableForSale { get; set; }
+    public int Likes { get; set; }
 }

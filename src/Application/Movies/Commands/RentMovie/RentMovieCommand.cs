@@ -4,8 +4,8 @@ using MovieApi.Application.Common.Interfaces.Services;
 namespace MovieApi.Application.Movies.Commands.RentMovie;
 public record RentMovieCommand : IRequest
 {
-    public int MovieId { get; set; }
-    public int MovieRentalPlanId { get; set; }
+    public int MovieId { get; init; }
+    public int MovieRentalPlanId { get; init; }
 }
 
 public class RentMovieCommandHandler : IRequestHandler<RentMovieCommand>

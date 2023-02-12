@@ -15,4 +15,5 @@ public interface IMovieService
     Task SaleMovie(int movieId, CancellationToken cancellationToken);
     Task RentMovie(int movieId, int movieRentalPlanId, CancellationToken cancellationToken);
     Task ReturnMovie(int movieRentalId, CancellationToken cancellationToken);
+    Task<bool> LikeMovieToggle(int movieId, CancellationToken cancellationToken);
 }

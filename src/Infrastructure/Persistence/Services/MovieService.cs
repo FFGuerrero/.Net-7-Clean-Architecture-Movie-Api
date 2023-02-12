@@ -32,7 +32,7 @@ public class MovieService : IMovieService
 
     public async Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        var movies = _context.Movies.AsQueryable();
+        var movies = _context.Movies.Include(x => x.UserMovieLikes).AsQueryable();
         var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(Role.Administrator);
 
         if (!userIsInAdminRole)
@@ -243,5 +243,33 @@ public class MovieService : IMovieService
             transaction?.Rollback();
             throw;
         }
+    }
+
+    public async Task<bool> LikeMovieToggle(int movieId, CancellationToken cancellationToken)
+    {
+        string userId = _currentUserService.UserId!;
+        bool isUserLike = false;
+        var entity = await _context.UserMovieLikes
+            .FirstOrDefaultAsync(x => x.MovieId == movieId && x.UserId == userId, cancellationToken);
+
+        if (entity is null)
+        {
+            var userMovieLike = new UserMovieLike()
+            {
+                MovieId = movieId,
+                UserId = userId
+            };
+
+            await _context.UserMovieLikes.AddAsync(userMovieLike, cancellationToken);
+            isUserLike = true;
+        }
+        else
+        {
+            _context.UserMovieLikes.Remove(entity);
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return isUserLike;
     }
 }

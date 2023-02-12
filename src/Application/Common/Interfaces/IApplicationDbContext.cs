@@ -19,6 +19,8 @@ public interface IApplicationDbContext
 
     DbSet<UserMovieLike> UserMovieLikes { get; }
 
+    DbSet<MovieImage> MovieImages { get; }
+
     DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

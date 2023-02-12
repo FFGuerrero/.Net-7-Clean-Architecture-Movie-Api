@@ -32,7 +32,10 @@ public class MovieService : IMovieService
 
     public async Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        var movies = _context.Movies.Include(x => x.UserMovieLikes).AsQueryable();
+        var movies = _context.Movies
+            .Include(x => x.UserMovieLikes)
+            .Include(x => x.MovieImages)
+            .AsQueryable();
         var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(Role.Administrator);
 
         if (!userIsInAdminRole)
@@ -61,12 +64,35 @@ public class MovieService : IMovieService
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
 
-    public async Task<int> CreateMovie(Movie movie, CancellationToken cancellationToken)
+    public async Task<int> CreateMovie(Movie movie, List<string>? movieImages, CancellationToken cancellationToken)
     {
-        await _context.Movies.AddAsync(movie, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            await _context.Movies.AddAsync(movie, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
-        return movie.Id;
+            if (movieImages is not null && movieImages.Count > 0)
+            {
+                _context.MovieImages.AddRange(movieImages.Select(x =>
+                    new MovieImage()
+                    {
+                        MovieId = movie.Id,
+                        ImageUrl = x
+                    }));
+
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            transaction.Commit();
+
+            return movie.Id;
+        }
+        catch (Exception)
+        {
+            transaction?.Rollback();
+            throw;
+        }
     }
 
     public async Task DeleteMovie(int id, CancellationToken cancellationToken)

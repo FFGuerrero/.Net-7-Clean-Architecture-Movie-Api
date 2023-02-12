@@ -13,4 +13,5 @@ public class Movie : BaseAuditableEntity
     public List<MovieSale>? MovieSales { get; set; }
     public List<MovieRental>? MovieRentals { get; set; }
     public List<UserMovieLike>? UserMovieLikes { get; set; }
+    public List<MovieImage>? MovieImages { get; set; }
 }

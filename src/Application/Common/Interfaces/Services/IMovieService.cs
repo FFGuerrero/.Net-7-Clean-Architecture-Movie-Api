@@ -6,7 +6,7 @@ namespace MovieApi.Application.Common.Interfaces.Services;
 public interface IMovieService
 {
     Task<PaginatedList<MovieDto>> GetMoviesWithPagination(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken);
-    Task<int> CreateMovie(Movie movie, CancellationToken cancellationToken);
+    Task<int> CreateMovie(Movie movie, List<string>? movieImages, CancellationToken cancellationToken);
     Task DeleteMovie(int id, CancellationToken cancellationToken);
     Task UpdateMovie(Movie movie, CancellationToken cancellationToken);
     Task<bool> IsUniqueTitle(string title, CancellationToken cancellationToken);

@@ -8,6 +8,7 @@ public class MovieProfile : Profile
     public MovieProfile()
     {
         CreateMap<Movie, MovieDto>()
-            .ForMember(d => d.Likes, opt => opt.MapFrom(o => o.UserMovieLikes.Count(x => x.MovieId == o.Id)));
+            .ForMember(d => d.Likes, opt => opt.MapFrom(o => o.UserMovieLikes!.Count))
+            .ForMember(d => d.Images, opt => opt.MapFrom(o => o.MovieImages!.Select(x => x.ImageUrl)));
     }
 }

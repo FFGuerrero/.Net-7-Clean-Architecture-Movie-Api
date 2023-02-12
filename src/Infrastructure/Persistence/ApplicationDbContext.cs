@@ -38,6 +38,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public DbSet<UserMovieLike> UserMovieLikes => Set<UserMovieLike>();
 
+    public DbSet<MovieImage> MovieImages => Set<MovieImage>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

@@ -12,5 +12,6 @@ public class MovieDto
     public decimal SalePrice { get; set; }
     public bool IsAvailableForRental { get; set; }
     public bool IsAvailableForSale { get; set; }
+    public List<string>? Images { get; set; }
     public int Likes { get; set; }
 }

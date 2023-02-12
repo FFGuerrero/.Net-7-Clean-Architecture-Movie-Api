@@ -12,6 +12,7 @@ public record CreateMovieCommand : IRequest<int>
     public decimal SalePrice { get; init; }
     public bool IsAvailableForRental { get; init; }
     public bool IsAvailableForSale { get; init; }
+    public List<string>? MovieImages { get; init; }
 }
 public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int>
 {
@@ -35,6 +36,6 @@ public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int
             IsAvailableForSale = request.IsAvailableForSale
         };
 
-        return await _movieService.CreateMovie(movie, cancellationToken);
+        return await _movieService.CreateMovie(movie, request.MovieImages, cancellationToken);
     }
 }

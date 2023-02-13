@@ -6,6 +6,6 @@ public class GetMoviesWithPaginationQueryValidator : AbstractValidator<GetMovies
 {
     public GetMoviesWithPaginationQueryValidator()
     {
-        Include(new BasePaginationQueryValidator());
+        Include(new BasePaginationQueryValidator<MovieDto>());
     }
 }

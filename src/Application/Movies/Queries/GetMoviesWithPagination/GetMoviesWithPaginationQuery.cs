@@ -23,6 +23,7 @@ public class GetMoviesWithPaginationQueryHandler : IRequestHandler<GetMoviesWith
 
     public async Task<PaginatedList<MovieDto>> Handle(GetMoviesWithPaginationQuery request, CancellationToken cancellationToken)
     {
+        request.OrderBy ??= nameof(MovieDto.Title);
         return await _movieService.GetMoviesWithPagination(request, cancellationToken);
     }
 }

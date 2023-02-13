@@ -3,6 +3,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Application.Common.Exceptions;
+using MovieApi.Application.Common.Extensions;
 using MovieApi.Application.Common.Interfaces;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Mappings;
@@ -10,6 +11,7 @@ using MovieApi.Application.Common.Models;
 using MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
 using MovieApi.Domain.Entities;
 using MovieApi.Domain.Enums;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MovieApi.Infrastructure.Persistence.Services;
 public class MovieService : IMovieService
@@ -36,6 +38,7 @@ public class MovieService : IMovieService
             .Include(x => x.UserMovieLikes)
             .Include(x => x.MovieImages)
             .AsQueryable();
+
         var userIsInAdminRole = await _identityService.CurrentUserIsInRoleAsync(Role.Administrator);
 
         if (!userIsInAdminRole)
@@ -58,10 +61,20 @@ public class MovieService : IMovieService
             movies = movies.Where(x => x.IsAvailableForSale == request.IsAvailableForSale);
         }
 
-        movies = movies.OrderBy(x => x.Title);
+        movies = ApplyOrderBy(request, movies);
 
         return await movies.ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
+    }
+
+    private static IQueryable<Movie>? ApplyOrderBy(GetMoviesWithPaginationQuery request, IQueryable<Movie> movies)
+    {
+        return request.OrderBy switch
+        {
+            string column when column.Equals("Likes", StringComparison.InvariantCultureIgnoreCase) =>
+                request.IsDescending ? movies.OrderByDescending(x => x.UserMovieLikes!.Count) : movies.OrderBy(x => x.UserMovieLikes!.Count),
+            _ => movies.ApplySort(request.OrderBy, request.IsDescending)
+        };
     }
 
     public async Task<int> CreateMovie(Movie movie, List<string>? movieImages, CancellationToken cancellationToken)

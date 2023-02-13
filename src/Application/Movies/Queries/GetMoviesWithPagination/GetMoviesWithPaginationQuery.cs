@@ -1,16 +1,15 @@
 ﻿using MediatR;
+using MovieApi.Application.Common.Base;
 using MovieApi.Application.Common.Interfaces.Services;
 using MovieApi.Application.Common.Models;
 
 namespace MovieApi.Application.Movies.Queries.GetMoviesWithPagination;
-public record GetMoviesWithPaginationQuery : IRequest<PaginatedList<MovieDto>>
+public record GetMoviesWithPaginationQuery : BasePaginationQuery<MovieDto>
 {
     public int MovieId { get; init; }
     public string? Title { get; init; }
     public bool? IsAvailableForRental { get; init; }
     public bool? IsAvailableForSale { get; init; }
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 10;
 }
 
 public class GetMoviesWithPaginationQueryHandler : IRequestHandler<GetMoviesWithPaginationQuery, PaginatedList<MovieDto>>
